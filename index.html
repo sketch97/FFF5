@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Your Discord Server</title>
+  <meta name="description" content="Join our Discord community." />
+  <style>
+    :root{
+      --bg:#07060a;
+      --red:#ff2b2b;
+      --red2:#b00000;
+      --text:#f4f4f7;
+      --muted:#b9b9c2;
+      --card: rgba(20, 10, 14, 0.65);
+      --border: rgba(255, 43, 43, 0.28);
+      --glow: rgba(255, 43, 43, 0.35);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x:hidden;
+    }
+
+    /* Background layers */
+    .bg{
+      position:fixed;
+      inset:0;
+      z-index:-3;
+      background:
+        radial-gradient(900px 500px at 20% 20%, rgba(255,43,43,0.18), transparent 60%),
+        radial-gradient(700px 450px at 80% 30%, rgba(176,0,0,0.16), transparent 60%),
+        radial-gradient(900px 600px at 50% 90%, rgba(255,43,43,0.10), transparent 60%),
+        linear-gradient(180deg, #07060a 0%, #05040a 50%, #07060a 100%);
+    }
+
+    /* Red scanlines */
+    .scanlines{
+      position:fixed;
+      inset:0;
+      z-index:-2;
+      pointer-events:none;
+      opacity:0.55;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          rgba(255, 43, 43, 0.13) 0px,
+          rgba(255, 43, 43, 0.13) 1px,
+          rgba(0, 0, 0, 0.0) 3px,
+          rgba(0, 0, 0, 0.0) 6px
+        );
+      animation: drift 7s linear infinite;
+      mix-blend-mode: screen;
+    }
+    @keyframes drift{
+      from{ transform: translateY(0); }
+      to{ transform: translateY(18px); }
+    }
+
+    /* Soft CRT vignette + subtle noise */
+    .vignette{
+      position:fixed;
+      inset:-20%;
+      z-index:-1;
+      pointer-events:none;
+      background:
+        radial-gradient(circle at center, rgba(0,0,0,0) 35%, rgba(0,0,0,0.55) 75%, rgba(0,0,0,0.9) 100%);
+    }
+    .noise{
+      position:fixed;
+      inset:0;
+      z-index:-1;
+      pointer-events:none;
+      opacity:0.06;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+      animation: noiseMove 1.2s steps(2) infinite;
+    }
+    @keyframes noiseMove{
+      0%{ transform: translate(0,0); }
+      25%{ transform: translate(-6px,3px); }
+      50%{ transform: translate(5px,-4px); }
+      75%{ transform: translate(-3px,-6px); }
+      100%{ transform: translate(0,0); }
+    }
+
+    header{
+      max-width:1100px;
+      margin:0 auto;
+      padding:28px 18px 0;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      text-decoration:none;
+      color:inherit;
+    }
+    .logo{
+      width:42px;height:42px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background: radial-gradient(circle at 30% 30%, rgba(255,43,43,.55), rgba(80,0,0,.15) 60%, rgba(0,0,0,.2));
+      box-shadow: 0 0 22px var(--glow);
+    }
+    .brand strong{ letter-spacing:0.6px; }
+    .pill{
+      border:1px solid var(--border);
+      background: rgba(12,8,10,0.6);
+      padding:8px 12px;
+      border-radius:999px;
+      color:var(--muted);
+      font-size:13px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    main{
+      max-width:1100px;
+      margin:0 auto;
+      padding:42px 18px 64px;
+      display:grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap:18px;
+    }
+    @media (max-width: 900px){
+      main{ grid-template-columns:1fr; padding-top:28px; }
+      header{ padding-top:18px; }
+    }
+
+    .card{
+      border:1px solid var(--border);
+      background: var(--card);
+      border-radius:22px;
+      padding:26px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.55);
+      position:relative;
+      overflow:hidden;
+    }
+    .card:before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: radial-gradient(500px 200px at 30% 0%, rgba(255,43,43,0.20), transparent 60%);
+      pointer-events:none;
+    }
+
+    h1{
+      margin:0 0 10px;
+      font-size:44px;
+      line-height:1.05;
+      letter-spacing:-0.6px;
+      text-shadow: 0 0 18px rgba(255,43,43,0.12);
+    }
+    .subtitle{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:16px;
+      line-height:1.55;
+      max-width:56ch;
+    }
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:18px;
+    }
+    .btn{
+      appearance:none;
+      border:1px solid var(--border);
+      background: rgba(10,7,9,0.65);
+      color:var(--text);
+      padding:12px 14px;
+      border-radius:14px;
+      text-decoration:none;
+      font-weight:650;
+      letter-spacing:0.2px;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+      box-shadow: 0 0 0 rgba(0,0,0,0);
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      border-color: rgba(255,43,43,0.45);
+      box-shadow: 0 10px 30px rgba(255,43,43,0.10);
+    }
+    .btn.primary{
+      background: linear-gradient(180deg, rgba(255,43,43,0.22), rgba(140,0,0,0.14));
+      box-shadow: 0 10px 30px rgba(255,43,43,0.12);
+    }
+    .btn small{
+      font-weight:600;
+      color:var(--muted);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:18px;
+    }
+    @media (max-width: 520px){
+      .grid{ grid-template-columns:1fr; }
+      h1{ font-size:36px; }
+    }
+
+    .tile{
+      border:1px solid rgba(255,43,43,0.18);
+      background: rgba(7,5,8,0.35);
+      border-radius:18px;
+      padding:14px;
+    }
+    .tile h3{
+      margin:0 0 6px;
+      font-size:14px;
+      letter-spacing:0.2px;
+      color: rgba(255,43,43,0.95);
+    }
+    .tile p{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+    }
+
+    .right .card{ padding:22px; }
+    .list{
+      margin:10px 0 0;
+      padding:0;
+      list-style:none;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .list li{
+      padding:12px 12px;
+      border-radius:16px;
+      border:1px solid rgba(255,43,43,0.16);
+      background: rgba(0,0,0,0.20);
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.35;
+    }
+    footer{
+      max-width:1100px;
+      margin:0 auto;
+      padding:0 18px 28px;
+      color: rgba(185,185,194,0.8);
+      font-size:12px;
+    }
+
+    /* Optional "glitch" text effect */
+    .glitch{
+      position:relative;
+      display:inline-block;
+    }
+    .glitch:before, .glitch:after{
+      content:attr(data-text);
+      position:absolute;
+      left:0; top:0;
+      width:100%;
+      overflow:hidden;
+      opacity:0.35;
+      pointer-events:none;
+    }
+    .glitch:before{
+      transform: translate(1px, 0);
+      color: rgba(255,43,43,0.9);
+      clip-path: inset(0 0 55% 0);
+    }
+    .glitch:after{
+      transform: translate(-1px, 0);
+      color: rgba(255,255,255,0.6);
+      clip-path: inset(55% 0 0 0);
+    }
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="scanlines"></div>
+  <div class="noise"></div>
+  <div class="vignette"></div>
+
+  <header>
+    <a class="brand" href="#">
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <strong>YOUR SERVER</strong><br />
+        <span class="pill">Discord community</span>
+      </div>
+    </a>
+    <div class="pill">⚡ Always online • Red scanlines</div>
+  </header>
+
+  <main>
+    <section class="left">
+      <div class="card">
+        <h1><span class="glitch" data-text="WELCOME">WELCOME</span> to <span style="color:var(--red)">YOUR SERVER</span></h1>
+        <p class="subtitle">
+          A fast-moving Discord community for chat, drops, events, and whatever you’re building.
+          Tap in and get verified.
+        </p>
+
+        <div class="actions">
+          <!-- Replace the href with your real Discord invite -->
+          <a class="btn primary" href="https://discord.gg/YOURINVITE" target="_blank" rel="noreferrer">
+            Join the Discord <small>→</small>
+          </a>
+          <a class="btn" href="#rules">Rules</a>
+          <a class="btn" href="#about">About</a>
+        </div>
+
+        <div class="grid" id="about">
+          <div class="tile">
+            <h3>🔥 Events</h3>
+            <p>Weekly hangouts, announcements, and community nights.</p>
+          </div>
+          <div class="tile">
+            <h3>🛡️ Verification</h3>
+            <p>Simple onboarding to keep things clean and real.</p>
+          </div>
+          <div class="tile">
+            <h3>💬 Channels</h3>
+            <p>General chat, media, suggestions, and topic rooms.</p>
+          </div>
+          <div class="tile">
+            <h3>🎁 Drops</h3>
+            <p>Roles, perks, and occasional surprises for active members.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="right">
+      <div class="card" id="rules">
+        <h2 style="margin:0 0 8px; font-size:18px; letter-spacing:0.2px;">Quick Rules</h2>
+        <p style="margin:0 0 12px; color:var(--muted); font-size:14px; line-height:1.5;">
+          Keep it respectful and don’t bring problems into the server.
+        </p>
+        <ul class="list">
+          <li>Be chill. No harassment, hate, or doxxing.</li>
+          <li>No spam, scams, or self-promo without permission.</li>
+          <li>Follow Discord ToS + server guidelines.</li>
+          <li>Mods have final call — appeal calmly if needed.</li>
+        </ul>
+
+        <div class="actions" style="margin-top:14px;">
+          <a class="btn" href="https://discord.gg/YOURINVITE" target="_blank" rel="noreferrer">Get Invite</a>
+          <a class="btn" href="mailto:you@example.com">Contact</a>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    © <span id="y"></span> YOUR SERVER — Built with love and scanlines.
+  </footer>
+
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
